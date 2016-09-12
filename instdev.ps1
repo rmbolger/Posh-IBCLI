@@ -26,7 +26,8 @@ if ([String]::IsNullOrWhiteSpace($PSScriptRoot)) {
     $destination = $shell_app.namespace($targetondisk)
     $destination.Copyhere($zip_file.items(), 0x10)
     Write-Host "Renaming folder" -ForegroundColor Cyan
-    Rename-Item -Path ($targetondisk+"\Posh-IBCLI-master") -NewName "Posh-IBCLI" -Force
+    Copy-Item "$($targetondisk)\Posh-IBCLI-master\Posh-IBCLI" $targetondisk -Recurse -Force
+    Remove-Item "$($targetondisk)\Posh-IBCLI-master" -recurse -confirm:$false
 } else {
     #running locally
     Copy-Item "$PSScriptRoot\Posh-IBCLI" $targetondisk -Recurse -Force
