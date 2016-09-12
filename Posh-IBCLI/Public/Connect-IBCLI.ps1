@@ -19,6 +19,7 @@ function Connect-IBCLI
         $Credential
     )
 
+    Write-Verbose "Connecting over SSH to $ComputerName as $($Credential.UserName)"
     $session = New-SSHSession -ComputerName $ComputerName -Credential $Credential -AcceptKey -ErrorAction Stop
     $stream = New-SSHShellStream -SSHSession $session -TerminalName 'vt100'
 
@@ -58,10 +59,13 @@ function Connect-IBCLI
         Connect to an appliance using a credential from embedded plaintext username and password. This is generally considered insecure, but works in a pinch.
 
     .LINK
-        Disconnect-IBCLI
+        Project: https://github.com/rmbolger/Posh-IBCLI
 
     .LINK
-        https://github.com/rmbolger/Posh-IBCLI
+        Invoke-IBCLICommand
+
+    .LINK
+        Disconnect-IBCLI
 
     #>
 }
