@@ -8,7 +8,7 @@ function Disconnect-IBCLI
             HelpMessage='Enter the ShellStream object returned by Connect-IBCLI.'
         )]
         [ValidateNotNull()]
-        [Renci.SshNet.ShellShellStream]
+        [Renci.SshNet.ShellStream]
         $ShellStream
     )
 
