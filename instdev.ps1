@@ -15,7 +15,7 @@ New-Item -ItemType Directory -Force -Path $targetondisk | out-null
 if ([String]::IsNullOrWhiteSpace($PSScriptRoot)) {
     # likely running from online, so download and extract
     $webclient = New-Object System.Net.WebClient
-    $url = '"https://github.com/rmbolger/Posh-IBCLI/archive/master.zip'
+    $url = 'https://github.com/rmbolger/Posh-IBCLI/archive/master.zip'
     Write-Host "Downloading latest version of Posh-IBCLI from $url" -ForegroundColor Cyan
     $file = "$($env:TEMP)\Posh-IBCLI.zip"
     $webclient.DownloadFile($url,$file)

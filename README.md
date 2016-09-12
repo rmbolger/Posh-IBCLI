@@ -6,7 +6,13 @@ The module relies heavily on the [Posh-SSH](https://github.com/darkoperator/Posh
 
 # Install
 
-*TBD: direct install and PowerShell Gallery*
+To install the latest development version from git, use the following command in PowerShell v3:
+
+```
+iex (invoke-restmethod https://raw.githubusercontent.com/rmbolger/Posh-IBCLI/master/instdev.ps1)
+```
+
+Release versions will eventually be available from [PowerShell Gallery](https://www.powershellgallery.com).
 
 You must enable the Remote Console on the Infoblox appliance you intend to manage. This can be done via the web UI in the properties of the grid or a specific grid member in the `Security` section.
 
@@ -18,4 +24,4 @@ It can also be done using the `set remote_console` command from the CLI if you a
 
 * Requires PowerShell v3 or later.
 * Requires Posh-SSH 1.7.5 or later.
-* Tested against NIOS 7.3.
+* Tested against NIOS 7.3.x.
