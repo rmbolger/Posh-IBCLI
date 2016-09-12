@@ -1,0 +1,11 @@
+PSTOPIC
+    about_Posh-IBCLI
+
+SHORT DESCRIPTION
+    PowerShell module for interacting with the Infoblox CLI via SSH
+
+LONG DESCRIPTION
+    PowerShell module for interacting with the Infoblox CLI via SSH
+
+DETAILED DESCRIPTION
+    This is a PowerShell module that makes it easier to automate Infoblox NIOS CLI commands via SSH. It is not intended to completely wrap every possible command. But it may include some common ones for information retrieval or grid administration.

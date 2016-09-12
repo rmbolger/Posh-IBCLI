@@ -26,4 +26,42 @@ function Connect-IBCLI
     Invoke-IBCLICommand 'show version' $stream | Out-Null
 
     return $stream
+
+
+
+    <#
+    .SYNOPSIS
+        Connect to an Infoblox remote console.
+
+    .DESCRIPTION
+        Connect to an Infoblox appliance's remote console over SSH. Make sure the remote console feature has been enabled on the appliance first.
+
+    .PARAMETER ComputerName
+        Hostname or IP Address of the Infoblox appliance.
+
+    .PARAMETER Credential
+        Username and password for the Infoblox appliance.
+
+    .OUTPUTS
+        Renci.SshNet.ShellStream. Connect-IBCLI returns a stream object that is required for the rest of the Posh-IBCLI commands.
+
+    .EXAMPLE
+        $stream = Connect-IBCLI -ComputerName 'ns1.example.com' -Credential (Get-Credential)
+
+        Connect to an appliance using a credential retrieved interactively with Get-Credential
+
+    .EXAMPLE
+        $securePass = ConvertTo-SecureString 'mypassword' -AsPlainText -Force
+        PS C:\>$cred = New-Object System.Management.Automation.PSCredential ('admin', $securePass)
+        PS C:\>$stream = Connect-IBCLI -ComputerName 'ns1.example.com' -Credential $cred
+
+        Connect to an appliance using a credential from embedded plaintext username and password. This is generally considered insecure, but works in a pinch.
+
+    .LINK
+        Disconnect-IBCLI
+
+    .LINK
+        https://github.com/rmbolger/Posh-IBCLI
+
+    #>
 }
