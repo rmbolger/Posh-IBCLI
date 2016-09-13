@@ -28,11 +28,13 @@ if ([String]::IsNullOrWhiteSpace($PSScriptRoot)) {
     Write-Host "Renaming folder" -ForegroundColor Cyan
     Copy-Item "$($targetondisk)\Posh-IBCLI-master\Posh-IBCLI" $targetondisk -Recurse -Force
     Remove-Item "$($targetondisk)\Posh-IBCLI-master" -recurse -confirm:$false
+    Import-Module -Name Posh-IBCLI
 } else {
-    #running locally
+    # running locally
     Copy-Item "$PSScriptRoot\Posh-IBCLI" $targetondisk -Recurse -Force
+    # force re-load the module (assuming you're editing locally and want to see changes)
+    Import-Module -Name Posh-IBCLI -Force
 }
 Write-Host 'Module has been installed' -ForegroundColor Green
 
-Import-Module -Name Posh-IBCLI
 Get-Command -Module Posh-IBCLI
