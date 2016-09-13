@@ -36,7 +36,7 @@ function Get-IBCLIStatus
     try {
 
         # get the command output
-        $output = Get-IBCLIOutput $stream 'show status'
+        $output = Invoke-IBCLICommand 'show status' $stream
 
         # setup our hashtable to hold the parsed properties
         $props = @{}
@@ -66,10 +66,15 @@ function Get-IBCLIStatus
             # use the hostname value because it's already an IP
             $props.IPAddress = $props.Hostname
         } else {
-            # resolve the hostname using the appliance's resolver
-            # seems more likely to work than using the caller's resolver
-            # (it's also easier on legacy OSes)
-            $props.IPAddress = (Get-IBCLIOutput $stream "dig $($props.Hostname) +short")[1].Trim()
+            # Resolve the hostname using ping from the appliance
+            # It's kludgy, but it works on appliances that may not
+            # be fully DNS configured yet and doesn't rely on the
+            # caller's DNS resolver.
+            # PING infoblox.localdomain (10.10.10.10) 56(84) bytes of data.
+            $line = (Invoke-IBCLICommand "ping $($props.Hostname) count 1" $stream)[1]
+            $ipStart = ($line.IndexOf('(') + 1)
+            $ipLength = ($line.IndexOf(')') - $ipStart)
+            $props.IPAddress = $line.Substring($ipStart,$ipLength)
         }
 
         # Grid masters don't return a Master IP property, but it would be nice to still have
