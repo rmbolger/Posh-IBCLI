@@ -7,7 +7,7 @@ function Invoke-IBCLICommand
             Position=0,
             HelpMessage='Enter the Infoblox CLI command to run'
         )]
-        [ValidateNotNullOrEmpty()]
+        [AllowEmptyString()]
         [string]
         $Command,
         [Parameter(
@@ -20,24 +20,38 @@ function Invoke-IBCLICommand
         $ShellStream
     )
 
-    $prompt = 'Infoblox > '
+    # create a regex that will match the different types of prompts
+    # that the CLI would be waiting for input on.
+    # The standard prompt waiting for a new command is simply 'Infoblox > ' as the final line.
+    # The other type is when a command is requesting input or confirmation such as:
+    # 'Enter Grid Name [Default Infoblox]: '
+    # 'Are you sure? (y or n): '
+    # All of the input queries seem to end with a colon-space
+    $promptRegex = '(?mi)(?:^Infoblox > $|^.*: $)'
 
     $ShellStream.WriteLine($Command)
     $output = ''
 
     $timeout = 0
-    while (!($output.EndsWith($prompt)) -and !($output.EndsWith(': ')) -and $timeout -le 10)
+    while (!($output -match $promptRegex) -and $timeout -le 10)
     {
         Start-Sleep -Seconds 1
-        $output += $ShellStream.Read()
-        Write-Verbose $output
+        $outPartial = $ShellStream.Read()
+        Write-Verbose $outPartial
+        $output += $outPartial
         $timeout++
     }
 
     # split the lines, discard empty lines, and trim whitespace from each line
     $lines = $output.Split("`r`n") | ?{ (!([String]::IsNullOrWhiteSpace($_))) } | %{ $_.Trim() }
 
-    return $lines
+    if ($lines.Count -gt 1) {
+        # return all but the first line which should be the echo of the command that was sent
+        return ($lines[1..($lines.length-1)])
+    } else {
+        # just return the single (or empty) line
+        return $lines
+    }
 
 
 

@@ -24,7 +24,7 @@ function Connect-IBCLI
     $stream = New-SSHShellStream -SSHSession $session -TerminalName 'vt100'
 
     # pre-read the output until the first prompt
-    Invoke-IBCLICommand 'show version' $stream | Out-Null
+    Invoke-IBCLICommand ([String]::Empty) $stream | Out-Null
 
     return $stream
 
