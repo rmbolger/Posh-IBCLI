@@ -3,6 +3,7 @@ function Get-IBCLIStatus
     [CmdletBinding()]
     param(
         [Parameter(
+            ParameterSetName='NewStream',
             Mandatory=$true,
             Position=0,
             HelpMessage='Enter the Hostname or IP Address of an Infoblox appliance.'
@@ -11,6 +12,16 @@ function Get-IBCLIStatus
         [string]
         $ComputerName,
         [Parameter(
+            ParameterSetName='ExistingStream',
+            Mandatory=$true,
+            Position=0,
+            HelpMessage='Enter the ShellStream object returned by Connect-IBCLI.'
+        )]
+        [ValidateNotNull()]
+        [Renci.SshNet.ShellStream]
+        $ShellStream,
+        [Parameter(
+            ParameterSetName='NewStream',
             Mandatory=$true,
             Position=1,
             HelpMessage='Enter the credentials for the appliance.'
@@ -19,7 +30,7 @@ function Get-IBCLIStatus
         $Credential
     )
 
-    Write-Verbose "Fetching 'show status' output from $ComputerName"
+    Write-Verbose "Fetching 'show status' output from $($ShellStream.Session.ConnectionInfo.Host)"
     <#
         'show status' returns one line per status item but which status
         items are returned depends on the member's role/config.
@@ -31,12 +42,14 @@ function Get-IBCLIStatus
         "Grid Master IP" is only returned on non-grid master members
     #>
 
-    $stream = Connect-IBCLI $ComputerName $Credential -ErrorAction Stop
+    if ($PSCmdlet.ParameterSetName -eq 'NewStream') {
+        $ShellStream = Connect-IBCLI $ComputerName $Credential -ErrorAction Stop
+    }
 
     try {
 
         # get the command output
-        $output = Invoke-IBCLICommand 'show status' $stream
+        $output = Invoke-IBCLICommand 'show status' $ShellStream
 
         # setup our hashtable to hold the parsed properties
         $props = @{}
@@ -71,7 +84,7 @@ function Get-IBCLIStatus
             # be fully DNS configured yet and doesn't rely on the
             # caller's DNS resolver.
             # PING infoblox.localdomain (10.10.10.10) 56(84) bytes of data.
-            $line = (Invoke-IBCLICommand "ping $($props.Hostname) count 1" $stream)[1]
+            $line = (Invoke-IBCLICommand "ping $($props.Hostname) count 1" $ShellStream)[1]
             $ipStart = ($line.IndexOf('(') + 1)
             $ipLength = ($line.IndexOf(')') - $ipStart)
             $props.IPAddress = $line.Substring($ipStart,$ipLength)
@@ -87,8 +100,10 @@ function Get-IBCLIStatus
         return (New-Object PSObject -Property $props)
 
     } finally {
-        # always disconnect
-        Disconnect-IBCLI $stream
+        # disconnect if we initiated the connection here
+        if ($PSCmdlet.ParameterSetName -eq 'NewStream') {
+            Disconnect-IBCLI $ShellStream
+        }
     }
 
 
@@ -102,6 +117,9 @@ function Get-IBCLIStatus
 
     .PARAMETER ComputerName
         Hostname or IP Address of the Infoblox appliance.
+
+    .PARAMETER ShellStream
+        A Renci.SshNet.ShellStream object that was returned from Connect-IBCLI.
 
     .PARAMETER Credential
         Username and password for the Infoblox appliance.
@@ -120,6 +138,12 @@ function Get-IBCLIStatus
         Get-IBCLIStatus -ComputerName 'ns1.example.com' -Credential (Get-Credential)
 
         Get the status object from the target appliance.
+
+    .EXAMPLE
+        $ShellStream = Connect-IBCLI -ComputerName 'ns1.example.com' -Credential (Get-Credential)
+        PS C:\>Get-IBCLIStatus $ShellStream
+
+        Get the status object using an existing ShellStream from the target appliance.
 
     .LINK
         Project: https://github.com/rmbolger/Posh-IBCLI
