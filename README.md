@@ -1,6 +1,6 @@
 # Description
 
-PowerShell module that makes it easier to automate Infoblox NIOS CLI commands via SSH. It is not intended to completely wrap every possible command. But it may include some common ones for information retrieval or grid administration.
+This PowerShell module makes it easier to automate Infoblox NIOS CLI commands via SSH. It is not intended to completely wrap every possible command. But it may include some common ones for information retrieval or grid administration.
 
 The module relies heavily on the [Posh-SSH](https://github.com/darkoperator/Posh-SSH) module which itself relies on a custom version of [SSH.NET](https://github.com/sshnet/SSH.NET).
 
