@@ -35,7 +35,7 @@ function Invoke-IBCLICommand
     # 'Are you sure? (y or n): '
     #
     # All of the input queries seem to end with a colon-space
-    $promptRegex = '(?mi)(?:^Infoblox > $|^.*: $)'
+    $promptRegex = '(?mi)(?:^.* > $|^.*: $)'
 
     # send the command
     $ShellStream.WriteLine($Command)
