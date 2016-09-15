@@ -30,7 +30,6 @@ function Get-IBCLIStatus
         $Credential
     )
 
-    Write-Verbose "Fetching 'show status' output from $($ShellStream.Session.ConnectionInfo.Host)"
     <#
         'show status' returns one line per status item but which status
         items are returned depends on the member's role/config.
@@ -45,6 +44,7 @@ function Get-IBCLIStatus
     if ($PSCmdlet.ParameterSetName -eq 'NewStream') {
         $ShellStream = Connect-IBCLI $ComputerName $Credential -ErrorAction Stop
     }
+    Write-Verbose "Fetching 'show status' output from $($ShellStream.Session.ConnectionInfo.Host)"
 
     try {
 
@@ -74,24 +74,37 @@ function Get-IBCLIStatus
         # add a synthesized IsMaster property
         $props.IsMaster = ($props.GridStatus -eq 'ID Grid Master')
 
-        # add a synthesized IP property
-        if ($props.Hostname[0] -match "^\d$") {
-            # use the hostname value because it's already an IP
-            $props.IPAddress = $props.Hostname
-        } else {
-            # Resolve the hostname using ping from the appliance
-            # It's kludgy, but it works on appliances that may not
-            # be fully DNS configured yet and doesn't rely on the
-            # caller's DNS resolver.
-            # PING infoblox.localdomain (10.10.10.10) 56(84) bytes of data.
-            $line = (Invoke-IBCLICommand "ping $($props.Hostname) count 1" $ShellStream)[1]
-            $ipStart = ($line.IndexOf('(') + 1)
-            $ipLength = ($line.IndexOf(')') - $ipStart)
-            $props.IPAddress = $line.Substring($ipStart,$ipLength)
+        # add synthesized IsActiveHA/IsPassiveHA properties
+        $props.IsActiveHA = $false
+        $props.IsPassiveHA = $false
+        if ($props.HAStatus -eq 'Active') {
+            $props.IsActiveHA = $true
+        } elseif ($props.HAStatus -eq 'Passive') {
+            $props.IsPassiveHA = $true
+        }
+
+        # add a synthesized IP property which should (as far as I've tested)
+        # always be the LAN1 IP which shows up as "IPv4 Address" for
+        # non-HA members and "Public Local IPv4 Address" for HA members
+        $lines = Invoke-IBCLICommand 'show network' $ShellStream
+        $inLAN1 = $false
+        foreach ($line in $lines[0..($lines.Count-2)])
+        {
+            if (!$inLAN1 -and $line -eq 'Current LAN1 Network Settings:') {
+                $inLAN1 = $true
+                continue
+            }
+            if ($inLAN1 -and $line -match "(?i)^(?:Public Local )?IPv4 Address:\s+(.*)") {
+                $props.IPAddress = $matches[1]
+                break
+            }
+        }
+        if ([String]::IsNullOrWhiteSpace($props.IPAddress)) {
+            throw "Unable to parse IP address from show network"
         }
 
         # Grid masters don't return a Master IP property, but it would be nice to still have
-        # this info available on the output object.
+        # this property be non-null on the output object.
         if ($props.IsMaster) {
             $props.MasterIP = $props.IPAddress
         }
@@ -132,6 +145,8 @@ function Get-IBCLIStatus
             [string] IPAddress
             [bool]   IsMaster
             [bool]   IsCandidate
+            [bool]   IsActiveHA
+            [bool]   IsPassiveHA
             [string] MasterIP
 
     .EXAMPLE
