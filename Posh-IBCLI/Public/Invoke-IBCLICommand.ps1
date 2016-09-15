@@ -51,17 +51,26 @@ function Invoke-IBCLICommand
     if (((Get-Date) - $startTime).TotalSeconds -ge $TimeoutSeconds) {
         Write-Warning "Timed out waiting for prompt."
     }
-    Write-Verbose $output
+    Write-Verbose "Raw output:`r`n$output"
 
     # split the lines, discard empty lines, and trim whitespace from each line
     $lines = $output.Split("`r`n") | ?{ (!([String]::IsNullOrWhiteSpace($_))) } | %{ $_.Trim() }
 
-    if ($lines.Count -gt 1) {
-        # return all but the first line (the command echo)
-        return ($lines[1..($lines.length-1)])
+    # there should be at least 2 lines (command echo + prompt) unless the
+    # command that was sent was an empty string in which case just one line (prompt)
+    if ($lines.Count -gt 2) {
+        # return all but the command echo
+        return $lines[1..($lines.Count-1)]
+    } elseif ($lines.Count -eq 2) {
+        # return just the prompt
+        # but make sure the return value is still a single-valued array
+        # rather than a standalone string due to powershell unrolling
+        # https://blogs.msdn.microsoft.com/powershell/2007/01/23/array-literals-in-powershell/
+        return ,@($lines[1])
     } else {
-        # just return the single (or empty) line
-        return $lines
+        # just return the single line prompt
+        # and jump through the same hoops to make sure it's an array
+        return ,@($lines)
     }
 
 
