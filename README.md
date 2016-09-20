@@ -29,3 +29,7 @@ It can also be done using the `set remote_console` command from the CLI if you a
 * Requires PowerShell v3 or later.
 * Requires Posh-SSH 1.7.5 or later.
 * Tested against NIOS 7.3.x.
+
+# Changelog
+
+See [CHANGELOG.md](/CHANGELOG.md)
