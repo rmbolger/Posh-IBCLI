@@ -82,6 +82,11 @@ function Get-IBCLILicenses
                 }
             }}
 
+        # inject the type name for each result
+        $ret | %{
+            $_.PSObject.TypeNames.Insert(0,'Dvolve.IBCLI.License')
+        }
+
         return $ret
 
     } finally {
@@ -98,7 +103,7 @@ function Get-IBCLILicenses
         Get the licenses installed on an Infoblox appliance.
 
     .DESCRIPTION
-        Runs the 'show license csv' command on the target appliance and returns the parsed result as a custom object.
+        Runs the 'show license csv' command on the target appliance and returns the parsed result as a set of License objects.
 
     .PARAMETER ComputerName
         Hostname or IP Address of the Infoblox appliance.
@@ -110,11 +115,11 @@ function Get-IBCLILicenses
         Username and password for the Infoblox appliance.
 
     .OUTPUTS
-        A custom object with all of the parsed values returned from the command. Permanent licenses will have Expiration set to DateTime.MaxValue (https://msdn.microsoft.com/en-us/library/system.datetime.maxvalue(v=vs.110).aspx).
+        A Dvolve.IBCLI.License object for each license with all of the parsed values returned from the command. Permanent licenses will have Expiration set to DateTime.MaxValue (https://msdn.microsoft.com/en-us/library/system.datetime.maxvalue(v=vs.110).aspx).
             [string] LicenseType
             [string] LicenseString
-            [string] HardwareID
             [DateTime] Expiration
+            [string] HardwareID
 
     .EXAMPLE
         Get-IBCLILicenses -ComputerName 'ns1.example.com' -Credential (Get-Credential)

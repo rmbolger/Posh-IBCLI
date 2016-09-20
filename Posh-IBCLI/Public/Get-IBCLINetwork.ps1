@@ -93,7 +93,9 @@ function Get-IBCLINetwork
             {
                 # close up the last interface object
                 if ($curInterface -ne [String]::Empty) {
-                    Write-Output (New-Object PSObject -Property $props)
+                    $ret = (New-Object PSObject -Property $props)
+                    $ret.PSObject.TypeNames.Insert(0,'Dvolve.IBCLI.Interface')
+                    Write-Output $ret
                 }
 
                 # start the new interface object
@@ -101,6 +103,20 @@ function Get-IBCLINetwork
                 $curInterface = $matches[1]
                 $props.IFName = $curInterface
                 Write-Verbose "Found $($props.IFName) interface"
+
+                # set a bunch of default values so that the return objects
+                # all have the same members regardless of what is returned
+                # by the command
+                $props.IsHAEnabled = $false
+                $props.IPAddressVIP = [String]::Empty
+                $props.IPAddressHALocal = [String]::Empty
+                $props.RestrictSupportAndConsole = $false
+                $props.VLANTag = [String]::Empty
+                $props.DSCPValue = [String]::Empty
+                $props.IPv6Address = [String]::Empty
+                $props.IPv6Gateway = [String]::Empty
+                $props.IPv6VLANTag = [String]::Empty
+                $props.IPv6DSCPValue = [String]::Empty
 
                 continue
             }
@@ -136,12 +152,6 @@ function Get-IBCLINetwork
                 $props.RestrictSupportAndConsole = [Boolean]::Parse($val)
                 continue
             }
-            if ($key -eq 'Grid Status') {
-                $val -match "^(M(?:emb|ast)er) of ([\w\d ]+) Grid$" | Out-Null
-                $props.IsMaster = $false
-                if ($matches[1] -eq 'Master') { $props.IsMaster = $true }
-                $props.GridName = $matches[2]
-            }
             # For the rest of these properties we're just going from the CLI docs
             # and some educated guesses as I don't have any appliances to test
             # them with.
@@ -171,7 +181,9 @@ function Get-IBCLINetwork
             }
         }
         # close up the last interface object
-        Write-Output (New-Object PSObject -Property $props)
+        $ret = (New-Object PSObject -Property $props)
+        $ret.PSObject.TypeNames.Insert(0,'Dvolve.IBCLI.Interface')
+        Write-Output $ret
 
         return
 
@@ -189,7 +201,7 @@ function Get-IBCLINetwork
         Get the network interface details of an Infoblox appliance.
 
     .DESCRIPTION
-        Runs the 'show network' command on the target appliance and returns the parsed result as a custom object.
+        Runs the 'show network' command on the target appliance and returns the parsed results as a set of Interface objects.
 
     .PARAMETER ComputerName
         Hostname or IP Address of the Infoblox appliance.
@@ -201,7 +213,7 @@ function Get-IBCLINetwork
         Username and password for the Infoblox appliance.
 
     .OUTPUTS
-        A custom object for each interface with all of the parsed values returned from the command and some synthesized ones. Not all of these properties will exist for every interface.
+        A Dvolve.IBCLI.Interfacecustom object for each interface with all of the parsed values returned from the command and some synthesized ones. Not all of these properties will exist for every interface.
             [string] IFName
             [string] IPAddress
             [string] NetMask
@@ -210,8 +222,6 @@ function Get-IBCLINetwork
             [string] IPAddressVIP
             [string] IPAddressHALocal
             [bool]   RestrictSupportAndConsole
-            [bool]   IsMaster
-            [string] GridName
             [string] VLANTag
             [string] DSCPValue
             [string] IPv6Address
@@ -222,13 +232,13 @@ function Get-IBCLINetwork
     .EXAMPLE
         Get-IBCLINetwork -ComputerName 'ns1.example.com' -Credential (Get-Credential)
 
-        Get a collection of network interface objects from the target appliance.
+        Get a collection of Interface objects from the target appliance.
 
     .EXAMPLE
         $ShellStream = Connect-IBCLI -ComputerName 'ns1.example.com' -Credential (Get-Credential)
         PS C:\>Get-IBCLINetwork $ShellStream
 
-        Get a collection of network interface objects using an existing ShellStream from the target appliance.
+        Get a collection of Interface objects using an existing ShellStream from the target appliance.
 
     .LINK
         Project: https://github.com/rmbolger/Posh-IBCLI

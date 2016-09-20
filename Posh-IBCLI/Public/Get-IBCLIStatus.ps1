@@ -110,7 +110,9 @@ function Get-IBCLIStatus
         }
 
         # turn the hashtable into a custom object and return it
-        return (New-Object PSObject -Property $props)
+        $ret = (New-Object PSObject -Property $props)
+        $ret.PSObject.TypeNames.Insert(0,'Dvolve.IBCLI.Status')
+        return $ret
 
     } finally {
         # disconnect if we initiated the connection here
@@ -138,16 +140,16 @@ function Get-IBCLIStatus
         Username and password for the Infoblox appliance.
 
     .OUTPUTS
-        A custom object with all of the parsed values returned from the command and some synthesized ones.
+        A Dvolve.IBCLI.Status object with all of the parsed values returned from the command and some synthesized ones.
             [string] GridStatus
             [string] HAStatus
             [string] Hostname
             [string] IPAddress
+            [string] MasterIP
             [bool]   IsMaster
             [bool]   IsCandidate
             [bool]   IsActiveHA
             [bool]   IsPassiveHA
-            [string] MasterIP
 
     .EXAMPLE
         Get-IBCLIStatus -ComputerName 'ns1.example.com' -Credential (Get-Credential)
