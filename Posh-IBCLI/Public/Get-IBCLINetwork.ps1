@@ -27,7 +27,12 @@ function Get-IBCLINetwork
             HelpMessage='Enter the credentials for the appliance.'
         )]
         [PSCredential]
-        $Credential
+        $Credential,
+        [Parameter(
+            ParameterSetName='NewStream'
+        )]
+        [Switch]
+        $Force
     )
 
     <#
@@ -72,7 +77,7 @@ function Get-IBCLINetwork
     #>
 
     if ($PSCmdlet.ParameterSetName -eq 'NewStream') {
-        $ShellStream = Connect-IBCLI $ComputerName $Credential -ErrorAction Stop
+        $ShellStream = Connect-IBCLI $ComputerName $Credential -Force:$Force -ErrorAction Stop
     }
     Write-Verbose "Fetching 'show network' output from $($ShellStream.Session.ConnectionInfo.Host)"
 
@@ -211,6 +216,9 @@ function Get-IBCLINetwork
 
     .PARAMETER Credential
         Username and password for the Infoblox appliance.
+
+    .PARAMETER Force
+        Disable SSH host key checking
 
     .OUTPUTS
         A Dvolve.IBCLI.Interfacecustom object for each interface with all of the parsed values returned from the command and some synthesized ones. Not all of these properties will exist for every interface.

@@ -69,11 +69,16 @@ function Invoke-IBCLISetMembership
             HelpMessage='Enter grid shared secret.'
         )]
         [string]
-        $GridSecret
+        $GridSecret,
+        [Parameter(
+            ParameterSetName='NewStream'
+        )]
+        [Switch]
+        $Force
     )
 
     if ($PSCmdlet.ParameterSetName -eq 'NewStream') {
-        $ShellStream = Connect-IBCLI $ComputerName $Credential -ErrorAction Stop
+        $ShellStream = Connect-IBCLI $ComputerName $Credential -Force:$Force -ErrorAction Stop
     }
     Write-Verbose "Joining $($ShellStream.Session.ConnectionInfo.Host) to $GridName grid on master $GridMaster."
 
@@ -158,6 +163,9 @@ function Invoke-IBCLISetMembership
 
     .PARAMETER GridSecret
         The grid's shared secret value used to join new members.
+
+    .PARAMETER Force
+        Disable SSH host key checking
 
     .OUTPUTS
         $true if the join was successful.

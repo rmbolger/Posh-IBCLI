@@ -27,7 +27,12 @@ function Get-IBCLILicenses
             HelpMessage='Enter the credentials for the appliance.'
         )]
         [PSCredential]
-        $Credential
+        $Credential,
+        [Parameter(
+            ParameterSetName='NewStream'
+        )]
+        [Switch]
+        $Force
     )
 
     Write-Verbose "Fetching 'show license csv' output from $($ShellStream.Session.ConnectionInfo.Host)"
@@ -48,7 +53,7 @@ function Get-IBCLILicenses
     #>
 
     if ($PSCmdlet.ParameterSetName -eq 'NewStream') {
-        $ShellStream = Connect-IBCLI $ComputerName $Credential -ErrorAction Stop
+        $ShellStream = Connect-IBCLI $ComputerName $Credential -Force:$Force -ErrorAction Stop
     }
 
     try {
@@ -113,6 +118,9 @@ function Get-IBCLILicenses
 
     .PARAMETER Credential
         Username and password for the Infoblox appliance.
+
+    .PARAMETER Force
+        Disable SSH host key checking
 
     .OUTPUTS
         A Dvolve.IBCLI.License object for each license with all of the parsed values returned from the command. Permanent licenses will have Expiration set to DateTime.MaxValue (https://msdn.microsoft.com/en-us/library/system.datetime.maxvalue(v=vs.110).aspx).
