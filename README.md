@@ -39,13 +39,13 @@ In the simplest case, you can just run one of the `Get-*` commands directly with
 Get-IBCLIStatus $myhost $cred
 ```
 
-For automation or scripting scenarios, you're likely to run multiple commands against the same appliance or might need to run commands that haven't already been wrapped by functions.  In these cases, you'll use `Connect-IBCLI` to get a ShellStream object that you can pass to subsequent commands. This helps with speed and efficiency because the functions won't need to establish multiple SSH connections to the appliance.
+For automation or scripting scenarios, you're likely to run multiple commands against the same appliance or might need to run commands that haven't already been wrapped by functions.  In these cases, you'll use `Connect-IBCLI` to get a `ShellStream` object that you can pass to subsequent commands. This helps with speed and efficiency because the functions won't need to establish multiple SSH connections to the appliance.
 
 ```powershell
 $stream = Connect-IBCLI $myhost $cred
 ```
 
-Once you have your ShellStream object, you can use it with the various wrapped commands or arbitrary commands using `Invoke-IBCLICommand`.
+Once you have your `ShellStream` object, you can use it with the various wrapped commands or arbitrary commands using `Invoke-IBCLICommand`.
 
 ```powershell
 Get-IBCLIStatus $stream
@@ -54,7 +54,7 @@ Invoke-IBCLICommand 'show capacity' $stream
 
 For CLI commands that aren't already wrapped by functions and have interactive prompts, you can just use multiple `Invoke-IBCLICommand` calls in succession.
 
-```
+```powershell
 PS > Invoke-IBCLICommand 'set delete_tasks_interval 13' $stream
 Current delete tasks interval is 14 days
 The delete tasks interval has been changed to 13 days
