@@ -27,7 +27,12 @@ function Get-IBCLIHardwareID
             HelpMessage='Enter the credentials for the appliance.'
         )]
         [PSCredential]
-        $Credential
+        $Credential,
+        [Parameter(
+            ParameterSetName='NewStream'
+        )]
+        [Switch]
+        $Force
     )
 
     Write-Verbose "Fetching 'show hwid' output from $($ShellStream.Session.ConnectionInfo.Host)"
@@ -38,7 +43,7 @@ function Get-IBCLIHardwareID
     #>
 
     if ($PSCmdlet.ParameterSetName -eq 'NewStream') {
-        $ShellStream = Connect-IBCLI $ComputerName $Credential -ErrorAction Stop
+        $ShellStream = Connect-IBCLI $ComputerName $Credential -Force:$Force -ErrorAction Stop
     }
 
     try {
@@ -73,6 +78,9 @@ function Get-IBCLIHardwareID
 
     .PARAMETER Credential
         Username and password for the Infoblox appliance.
+
+    .PARAMETER Force
+        Disable SSH host key checking
 
     .EXAMPLE
         Get-IBCLIHardwareID -ComputerName 'ns1.example.com' -Credential (Get-Credential)

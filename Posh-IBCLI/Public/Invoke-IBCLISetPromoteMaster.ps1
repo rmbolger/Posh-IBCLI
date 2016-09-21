@@ -40,11 +40,16 @@ function Invoke-IBCLISetPromoteMaster
         )]
         [ValidateRange(0,600)]
         [int]
-        $NotifyDelay=30
+        $NotifyDelay=30,
+        [Parameter(
+            ParameterSetName='NewStream'
+        )]
+        [Switch]
+        $Force
     )
 
     if ($PSCmdlet.ParameterSetName -eq 'NewStream') {
-        $ShellStream = Connect-IBCLI $ComputerName $Credential -ErrorAction Stop
+        $ShellStream = Connect-IBCLI $ComputerName $Credential -Force:$Force -ErrorAction Stop
     }
     Write-Verbose "Promoting candidate $($ShellStream.Session.ConnectionInfo.Host) to grid master."
 
@@ -132,6 +137,9 @@ function Invoke-IBCLISetPromoteMaster
 
     .PARAMETER NotifyDelay
         Time in seconds between notifications for grid members to join the new master. (Default: 30)
+
+    .PARAMETER Force
+        Disable SSH host key checking
 
     .OUTPUTS
         $true if the promotion was successful.

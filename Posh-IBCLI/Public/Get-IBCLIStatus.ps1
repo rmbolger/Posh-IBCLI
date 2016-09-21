@@ -27,7 +27,12 @@ function Get-IBCLIStatus
             HelpMessage='Enter the credentials for the appliance.'
         )]
         [PSCredential]
-        $Credential
+        $Credential,
+        [Parameter(
+            ParameterSetName='NewStream'
+        )]
+        [Switch]
+        $Force
     )
 
     <#
@@ -42,7 +47,7 @@ function Get-IBCLIStatus
     #>
 
     if ($PSCmdlet.ParameterSetName -eq 'NewStream') {
-        $ShellStream = Connect-IBCLI $ComputerName $Credential -ErrorAction Stop
+        $ShellStream = Connect-IBCLI $ComputerName $Credential -Force:$Force -ErrorAction Stop
     }
     Write-Verbose "Fetching 'show status' output from $($ShellStream.Session.ConnectionInfo.Host)"
 
@@ -138,6 +143,9 @@ function Get-IBCLIStatus
 
     .PARAMETER Credential
         Username and password for the Infoblox appliance.
+
+    .PARAMETER Force
+        Disable SSH host key checking
 
     .OUTPUTS
         A Dvolve.IBCLI.Status object with all of the parsed values returned from the command and some synthesized ones.

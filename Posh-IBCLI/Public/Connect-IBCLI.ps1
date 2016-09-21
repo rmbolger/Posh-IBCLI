@@ -16,11 +16,13 @@ function Connect-IBCLI
             HelpMessage='Enter the credentials for the appliance.'
         )]
         [PSCredential]
-        $Credential
+        $Credential,
+        [Switch]
+        $Force
     )
 
     Write-Verbose "Connecting over SSH to $ComputerName as $($Credential.UserName)"
-    $session = New-SSHSession -ComputerName $ComputerName -Credential $Credential -AcceptKey -ErrorAction Stop
+    $session = New-SSHSession -ComputerName $ComputerName -Credential $Credential -AcceptKey -Force:$Force -ErrorAction Stop
     $stream = New-SSHShellStream -SSHSession $session -TerminalName 'vt100'
 
     # pre-read the output until the first prompt
@@ -42,6 +44,9 @@ function Connect-IBCLI
 
     .PARAMETER Credential
         Username and password for the Infoblox appliance.
+
+    .PARAMETER Force
+        Disable SSH host key checking
 
     .OUTPUTS
         Renci.SshNet.ShellStream. Connect-IBCLI returns a stream object that is required for the rest of the Posh-IBCLI commands.
