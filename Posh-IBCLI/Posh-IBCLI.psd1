@@ -12,7 +12,7 @@
 RootModule = 'Posh-IBCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.1'
+ModuleVersion = '1.2'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -117,7 +117,7 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = 'Added optional `-Force` flag to `Connect-IBCLI` and related functions. Added quick start to readme.'
+        ReleaseNotes = 'Added GridStatus property on Get-IBCLINetwork output objects.'
 
     } # End of PSData hashtable
 

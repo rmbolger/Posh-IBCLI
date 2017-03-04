@@ -122,6 +122,7 @@ function Get-IBCLINetwork
                 $props.IPv6Gateway = [String]::Empty
                 $props.IPv6VLANTag = [String]::Empty
                 $props.IPv6DSCPValue = [String]::Empty
+                $props.GridStatus = [String]::Empty
 
                 continue
             }
@@ -155,6 +156,10 @@ function Get-IBCLINetwork
             }
             if ($key.StartsWith('Restrict Support and remote console access')) {
                 $props.RestrictSupportAndConsole = [Boolean]::Parse($val)
+                continue
+            }
+            if ($key -eq 'Grid Status') {
+                $props.GridStatus = $val
                 continue
             }
             # For the rest of these properties we're just going from the CLI docs
@@ -221,7 +226,7 @@ function Get-IBCLINetwork
         Disable SSH host key checking
 
     .OUTPUTS
-        A Dvolve.IBCLI.Interfacecustom object for each interface with all of the parsed values returned from the command and some synthesized ones. Not all of these properties will exist for every interface.
+        A Dvolve.IBCLI.Interface custom object for each interface with all of the parsed values returned from the command and some synthesized ones. Not all of these properties will exist for every interface.
             [string] IFName
             [string] IPAddress
             [string] NetMask
@@ -236,6 +241,7 @@ function Get-IBCLINetwork
             [string] IPv6Gateway
             [string] IPv6VLANTag
             [string] IPv6DSCPValue
+            [string] GridStatus
 
     .EXAMPLE
         Get-IBCLINetwork -ComputerName 'ns1.example.com' -Credential (Get-Credential)
