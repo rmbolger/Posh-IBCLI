@@ -18,6 +18,15 @@ if ([String]::IsNullOrWhiteSpace($PSScriptRoot)) {
     $url = 'https://github.com/rmbolger/Posh-IBCLI/archive/master.zip'
     Write-Host "Downloading latest version of Posh-IBCLI from $url" -ForegroundColor Cyan
     $file = "$($env:TEMP)\Posh-IBCLI.zip"
+
+    # GitHub now requires TLS 1.2
+    # https://blog.github.com/2018-02-23-weak-cryptographic-standards-removed/
+    $currentMaxTls = [Math]::Max([Net.ServicePointManager]::SecurityProtocol.value__,[Net.SecurityProtocolType]::Tls.value__)
+    $newTlsTypes = [enum]::GetValues('Net.SecurityProtocolType') | Where-Object { $_ -gt $currentMaxTls }
+    $newTlsTypes | ForEach-Object {
+        [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor $_
+    }
+
     $webclient.DownloadFile($url,$file)
     Write-Host "File saved to $file" -ForegroundColor Green
     $shell_app=new-object -com shell.application
