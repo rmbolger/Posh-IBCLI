@@ -1,3 +1,7 @@
+## 1.3.0 (2019-10-23)
+
+* Added `Get-IBCLIApacheCert` and `Set-IBCLIApacheCert` to allow manipulation of the web UI certificate on a grid member. These require a CLI command that exists in NIOS 8.4+ and will throw an error on earlier versions. 
+
 ## 1.2 (2017-03-04)
 
 * Added GridStatus property on Get-IBCLINetwork output objects. It's one of the only ways to glean the grid name from the CLI. NOTE: It only seems to have a valid value for the LAN1 interface.
