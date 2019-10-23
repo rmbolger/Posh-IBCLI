@@ -99,7 +99,7 @@ function Get-IBCLINetwork
                 # close up the last interface object
                 if ($curInterface -ne [String]::Empty) {
                     $ret = (New-Object PSObject -Property $props)
-                    $ret.PSObject.TypeNames.Insert(0,'Dvolve.IBCLI.Interface')
+                    $ret.PSObject.TypeNames.Insert(0,'IBCLI.Interface')
                     Write-Output $ret
                 }
 
@@ -192,7 +192,7 @@ function Get-IBCLINetwork
         }
         # close up the last interface object
         $ret = (New-Object PSObject -Property $props)
-        $ret.PSObject.TypeNames.Insert(0,'Dvolve.IBCLI.Interface')
+        $ret.PSObject.TypeNames.Insert(0,'IBCLI.Interface')
         Write-Output $ret
 
         return
@@ -226,7 +226,7 @@ function Get-IBCLINetwork
         Disable SSH host key checking
 
     .OUTPUTS
-        A Dvolve.IBCLI.Interface custom object for each interface with all of the parsed values returned from the command and some synthesized ones. Not all of these properties will exist for every interface.
+        A IBCLI.Interface custom object for each interface with all of the parsed values returned from the command and some synthesized ones. Not all of these properties will exist for every interface.
             [string] IFName
             [string] IPAddress
             [string] NetMask

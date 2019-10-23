@@ -4,7 +4,7 @@
         <View>
             <Name>Status</Name>
             <ViewSelectedBy>
-                <TypeName>Dvolve.IBCLI.Status</TypeName>
+                <TypeName>IBCLI.Status</TypeName>
             </ViewSelectedBy>
             <ListControl>
                 <ListEntries>
@@ -33,7 +33,7 @@
         <View>
             <Name>Interface</Name>
             <ViewSelectedBy>
-                <TypeName>Dvolve.IBCLI.Interface</TypeName>
+                <TypeName>IBCLI.Interface</TypeName>
             </ViewSelectedBy>
             <TableControl>
                 <TableHeaders>
@@ -65,7 +65,7 @@
         <View>
             <Name>License</Name>
             <ViewSelectedBy>
-                <TypeName>Dvolve.IBCLI.License</TypeName>
+                <TypeName>IBCLI.License</TypeName>
             </ViewSelectedBy>
             <TableControl>
                 <TableHeaders>
@@ -95,4 +95,4 @@
             </TableControl>
         </View>
     </ViewDefinitions>
-</Configuration>    
+</Configuration>

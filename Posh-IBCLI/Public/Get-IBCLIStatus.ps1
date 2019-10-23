@@ -116,7 +116,7 @@ function Get-IBCLIStatus
 
         # turn the hashtable into a custom object and return it
         $ret = (New-Object PSObject -Property $props)
-        $ret.PSObject.TypeNames.Insert(0,'Dvolve.IBCLI.Status')
+        $ret.PSObject.TypeNames.Insert(0,'IBCLI.Status')
         return $ret
 
     } finally {
@@ -148,7 +148,7 @@ function Get-IBCLIStatus
         Disable SSH host key checking
 
     .OUTPUTS
-        A Dvolve.IBCLI.Status object with all of the parsed values returned from the command and some synthesized ones.
+        A IBCLI.Status object with all of the parsed values returned from the command and some synthesized ones.
             [string] GridStatus
             [string] HAStatus
             [string] Hostname

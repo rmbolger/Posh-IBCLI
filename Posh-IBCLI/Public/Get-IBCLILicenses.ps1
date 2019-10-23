@@ -89,7 +89,7 @@ function Get-IBCLILicenses
 
         # inject the type name for each result
         $ret | %{
-            $_.PSObject.TypeNames.Insert(0,'Dvolve.IBCLI.License')
+            $_.PSObject.TypeNames.Insert(0,'IBCLI.License')
         }
 
         return $ret
@@ -123,7 +123,7 @@ function Get-IBCLILicenses
         Disable SSH host key checking
 
     .OUTPUTS
-        A Dvolve.IBCLI.License object for each license with all of the parsed values returned from the command. Permanent licenses will have Expiration set to DateTime.MaxValue (https://msdn.microsoft.com/en-us/library/system.datetime.maxvalue(v=vs.110).aspx).
+        A IBCLI.License object for each license with all of the parsed values returned from the command. Permanent licenses will have Expiration set to DateTime.MaxValue (https://msdn.microsoft.com/en-us/library/system.datetime.maxvalue(v=vs.110).aspx).
             [string] LicenseType
             [string] LicenseString
             [DateTime] Expiration
