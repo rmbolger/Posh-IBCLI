@@ -89,35 +89,35 @@ function Invoke-IBCLISetMembership
 
         # enter grid master
         if ($output[-1] -ne 'Enter new Grid Master VIP:') {
-            $output | %{ Write-Verbose $_ }
+            $output | ForEach-Object { Write-Verbose $_ }
             throw "Unexpected output during 'set membership'"
         }
         $output = Invoke-IBCLICommand $GridMaster $ShellStream
 
         # enter grid name
         if ($output[-1] -ne 'Enter Grid Name [Default Infoblox]:') {
-            $output | %{ Write-Verbose $_ }
+            $output | ForEach-Object { Write-Verbose $_ }
             throw "Unexpected output during 'set membership'"
         }
         $output = Invoke-IBCLICommand $GridName $ShellStream
 
         # enter grid secret
         if ($output[-1] -ne 'Enter Grid Shared Secret:') {
-            $output | %{ Write-Verbose $_ }
+            $output | ForEach-Object { Write-Verbose $_ }
             throw "Unexpected output during 'set membership'"
         }
         $output = Invoke-IBCLICommand $GridSecret $ShellStream
 
         # confirmation 1
         if ($output[-1] -ne 'Is this correct? (y or n):') {
-            $output | %{ Write-Verbose $_ }
+            $output | ForEach-Object { Write-Verbose $_ }
             throw "Unexpected output during 'set membership'"
         }
         $output = Invoke-IBCLICommand 'y' $ShellStream
 
         # confirmation 2
         if ($output[-1] -ne 'Are you sure? (y or n):') {
-            $output | %{ Write-Verbose $_ }
+            $output | ForEach-Object { Write-Verbose $_ }
             throw "Unexpected output during 'set membership'"
         }
         $output = Invoke-IBCLICommand 'y' $ShellStream 2 "until it has been configured on the grid master.`r`n"
@@ -126,7 +126,7 @@ function Invoke-IBCLISetMembership
             Write-Verbose "Join complete. Member restarting."
             return $true
         } else {
-            $output | %{ Write-Verbose $_ }
+            $output | ForEach-Object { Write-Verbose $_ }
             throw "Unexpected output during 'set membership'"
         }
 

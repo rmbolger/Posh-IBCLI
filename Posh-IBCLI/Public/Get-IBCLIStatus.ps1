@@ -61,10 +61,10 @@ function Get-IBCLIStatus
         $props.IsCandidate = $false # default in case it's not returned
 
         # parse each line with a colon
-        $output | ?{ $_ -like "*:*" } | %{
+        $output | Where-Object { $_ -like "*:*" } | ForEach-Object {
 
             # split on the colon and trim
-            $key,$val = $_.Split(':') | %{ $_.Trim() }
+            $key,$val = $_.Split(':') | ForEach-Object { $_.Trim() }
 
             switch ($key) {
                 "Grid Status" { $props.GridStatus = $val }

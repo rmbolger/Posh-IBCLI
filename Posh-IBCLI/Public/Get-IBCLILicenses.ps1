@@ -72,8 +72,8 @@ function Get-IBCLILicenses
         $output = Invoke-IBCLICommand 'show license csv' $ShellStream
         $csv = $output[0..($output.length-2)] | ConvertFrom-Csv
 
-        $ret = $csv | ?{ $_.public_ip -eq $ip } |
-            Select `
+        $ret = $csv | Where-Object { $_.public_ip -eq $ip } |
+            Select-Object `
             @{L='LicenseType';E={$_.license_type}}, `
             @{L='LicenseString';E={$_.license_string}}, `
             @{L='HardwareID';E={$hwid}}, `
@@ -88,7 +88,7 @@ function Get-IBCLILicenses
             }}
 
         # inject the type name for each result
-        $ret | %{
+        $ret | ForEach-Object {
             $_.PSObject.TypeNames.Insert(0,'IBCLI.License')
         }
 

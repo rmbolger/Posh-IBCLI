@@ -66,7 +66,7 @@ function Invoke-IBCLISetPromoteMaster
 
         # confirm notification delay
         if ($output[-1] -ne 'Do you want a delay between notification to Grid members? (y or n):') {
-            $output | %{ Write-Verbose $_ }
+            $output | ForEach-Object { Write-Verbose $_ }
             throw "Unexpected output during 'set promote_master'"
         }
         if ($NotifyDelay -eq 0) {
@@ -76,7 +76,7 @@ function Invoke-IBCLISetPromoteMaster
 
             # enter delay value
             if (!$output[-1].StartsWith('Set delay time for notification to grid member?')) {
-                $output | %{ Write-Verbose $_ }
+                $output | ForEach-Object { Write-Verbose $_ }
                 throw "Unexpected output during 'set promote_master'"
             }
             $output = Invoke-IBCLICommand $NotifyDelay $ShellStream
@@ -90,14 +90,14 @@ function Invoke-IBCLISetPromoteMaster
 
         # confirmation 1
         if ($output[-1] -ne 'Are you sure you want to do this? (y or n):') {
-            $output | %{ Write-Verbose $_ }
+            $output | ForEach-Object { Write-Verbose $_ }
             throw "Unexpected output during 'set promote_master'"
         }
         $output = Invoke-IBCLICommand 'y' $ShellStream
 
         # confirmation 2
         if ($output[-1] -ne 'Are you really sure you want to do this? (y or n):') {
-            $output | %{ Write-Verbose $_ }
+            $output | ForEach-Object { Write-Verbose $_ }
             throw "Unexpected output during 'set promote_master'"
         }
         $output = Invoke-IBCLICommand 'y' $ShellStream 2 "Master promotion beginning on this member`r`n"
@@ -106,7 +106,7 @@ function Invoke-IBCLISetPromoteMaster
             Write-Verbose "Promotion complete."
             return $true
         } else {
-            $output | %{ Write-Verbose $_ }
+            $output | ForEach-Object { Write-Verbose $_ }
             throw "Unexpected output during 'set promote_master'"
         }
 

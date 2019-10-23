@@ -128,7 +128,7 @@ function Get-IBCLINetwork
             }
 
             # split on the colon and trim
-            $key,$val = $line.Split(':') | %{ $_.Trim() }
+            $key,$val = $line.Split(':') | ForEach-Object { $_.Trim() }
 
             if ($key -eq 'IPv4 Address' -or $key -eq 'Public Local IPv4 Address' -or $key -eq "$curInterface IPv4 Address") {
                 $props.IPAddress = $val

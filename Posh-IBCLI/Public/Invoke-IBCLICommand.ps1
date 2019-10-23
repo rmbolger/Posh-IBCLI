@@ -64,7 +64,9 @@ function Invoke-IBCLICommand
     Write-Verbose "Raw output:`r`n$output"
 
     # split the lines, discard empty lines, and trim whitespace from each line
-    $lines = $output.Split("`r`n") | ?{ (!([String]::IsNullOrWhiteSpace($_))) } | %{ $_.Trim() }
+    $lines = $output.Split("`r`n") |
+        Where-Object { (!([String]::IsNullOrWhiteSpace($_))) } |
+        ForEach-Object { $_.Trim() }
 
     # there should be at least 2 lines (command echo + prompt) unless the
     # command that was sent was an empty string in which case just one line (prompt)
