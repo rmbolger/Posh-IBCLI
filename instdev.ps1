@@ -9,7 +9,7 @@ if (!(Get-Module Posh-SSH -ListAvailable)) {
 }
 
 # create user-specific modules folder if it doesn't exist
-$targetondisk = "$($env:USERPROFILE)\Documents\WindowsPowerShell\Modules"
+$targetondisk = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'WindowsPowerShell\Modules'
 New-Item -ItemType Directory -Force -Path $targetondisk | out-null
 
 if ([String]::IsNullOrWhiteSpace($PSScriptRoot)) {
