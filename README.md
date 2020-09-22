@@ -9,7 +9,7 @@ The module relies heavily on the [Posh-SSH](https://github.com/darkoperator/Posh
 To install the latest development version from git, use the following command in PowerShell v3 or later:
 
 ```powershell
-iex (invoke-restmethod https://raw.githubusercontent.com/rmbolger/Posh-IBCLI/master/instdev.ps1)
+iex (invoke-restmethod https://raw.githubusercontent.com/rmbolger/Posh-IBCLI/main/instdev.ps1)
 ```
 
 You can also find the [latest release](https://www.powershellgallery.com/packages/Posh-IBCLI/) version in the PowerShell Gallery. If you're on PowerShell v5 or later, you can install it with `Install-Module`.

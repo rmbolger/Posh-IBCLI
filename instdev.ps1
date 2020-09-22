@@ -15,7 +15,7 @@ New-Item -ItemType Directory -Force -Path $targetondisk | out-null
 if ([String]::IsNullOrWhiteSpace($PSScriptRoot)) {
     # likely running from online, so download and extract
     $webclient = New-Object System.Net.WebClient
-    $url = 'https://github.com/rmbolger/Posh-IBCLI/archive/master.zip'
+    $url = 'https://github.com/rmbolger/Posh-IBCLI/archive/main.zip'
     Write-Host "Downloading latest version of Posh-IBCLI from $url" -ForegroundColor Cyan
     $file = "$($env:TEMP)\Posh-IBCLI.zip"
 
@@ -35,8 +35,8 @@ if ([String]::IsNullOrWhiteSpace($PSScriptRoot)) {
     $destination = $shell_app.namespace($targetondisk)
     $destination.Copyhere($zip_file.items(), 0x10)
     Write-Host "Renaming folder" -ForegroundColor Cyan
-    Copy-Item "$($targetondisk)\Posh-IBCLI-master\Posh-IBCLI" $targetondisk -Recurse -Force
-    Remove-Item "$($targetondisk)\Posh-IBCLI-master" -recurse -confirm:$false
+    Copy-Item "$($targetondisk)\Posh-IBCLI-main\Posh-IBCLI" $targetondisk -Recurse -Force
+    Remove-Item "$($targetondisk)\Posh-IBCLI-main" -recurse -confirm:$false
     Import-Module -Name Posh-IBCLI
 } else {
     # running locally
